@@ -849,12 +849,7 @@ export function DesignaliCreative() {
                       
                       {/* Filtros Avançados (Colapsáveis) */}
                       {showFilters && (
-                        <motion.div 
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mt-4 space-y-4"
-                        >
+                        <div className="mt-4 space-y-4">
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div className="space-y-2">
                           <label className="text-sm font-medium">Status</label>
@@ -930,7 +925,7 @@ export function DesignaliCreative() {
                           </Select>
                         </div>
                           </div>
-                        </motion.div>
+                        </div>
                       )}
                     </CardContent>
                   </Card>
