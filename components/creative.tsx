@@ -26,6 +26,8 @@ import {
   FileText,
   PenTool,
   RefreshCw,
+  MessageSquare,
+  Edit,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -114,6 +116,15 @@ export function DesignaliCreative() {
   const handleViewOS = (os: MaintenanceRequest) => {
     setSelectedOS(os)
     setShowOSModal(true)
+  }
+
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'N/A'
+    try {
+      return new Date(dateString).toLocaleString('pt-BR')
+    } catch {
+      return 'N/A'
+    }
   }
 
   // Carregar dados iniciais
@@ -578,7 +589,7 @@ export function DesignaliCreative() {
                               <div>
                                 <p className="font-medium">{order.solicitante}</p>
                                 <p className="text-sm text-muted-foreground">
-                                  {order.setor} • {new Date(order.created_at).toLocaleDateString('pt-BR')}
+                                  {order.setor} • {order.created_at ? new Date(order.created_at).toLocaleDateString('pt-BR') : 'N/A'}
                                 </p>
                               </div>
                             </div>
@@ -1119,10 +1130,10 @@ export function DesignaliCreative() {
                 <div className="pt-4 border-t">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
                     <div>
-                      <span className="font-medium">Criado em:</span> {new Date(selectedOS.created_at).toLocaleString('pt-BR')}
+                      <span className="font-medium">Criado em:</span> {formatDate(selectedOS.created_at)}
                     </div>
                     <div>
-                      <span className="font-medium">Última atualização:</span> {new Date(selectedOS.updated_at).toLocaleString('pt-BR')}
+                      <span className="font-medium">Última atualização:</span> {formatDate(selectedOS.updated_at)}
                     </div>
                   </div>
                 </div>
