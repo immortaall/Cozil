@@ -97,6 +97,8 @@ export function DesignaliCreative() {
   })
   const [maintenanceRequests, setMaintenanceRequests] = useState<MaintenanceRequest[]>([])
   const [loading, setLoading] = useState(false)
+  const [selectedOS, setSelectedOS] = useState<MaintenanceRequest | null>(null)
+  const [showOSModal, setShowOSModal] = useState(false)
   const [stats, setStats] = useState({
     pendentes: 0,
     em_execucao: 0,
@@ -107,6 +109,11 @@ export function DesignaliCreative() {
   const handleSidebarClick = (key: string) => {
     setActiveTab(key)
     setMobileMenuOpen(false)
+  }
+
+  const handleViewOS = (os: MaintenanceRequest) => {
+    setSelectedOS(os)
+    setShowOSModal(true)
   }
 
   // Carregar dados iniciais
@@ -600,7 +607,12 @@ export function DesignaliCreative() {
                                  order.status === 'em_execucao' ? 'Em Execução' :
                                  order.status === 'concluida' ? 'Concluída' : 'Cancelada'}
                               </Badge>
-                              <Button variant="ghost" size="sm" className="rounded-xl">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="rounded-xl"
+                                onClick={() => handleViewOS(order)}
+                              >
                                 Ver OS
                               </Button>
                             </div>
@@ -993,6 +1005,147 @@ export function DesignaliCreative() {
           </Tabs>
         </main>
       </div>
+
+      {/* Modal de Detalhes da OS */}
+      {showOSModal && selectedOS && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Detalhes da OS</h2>
+                  <p className="text-muted-foreground">Ordem de Serviço #{selectedOS.id?.slice(-8)}</p>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setShowOSModal(false)}
+                  className="rounded-xl"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+
+              {/* Conteúdo */}
+              <div className="space-y-6">
+                {/* Informações Básicas */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Solicitante</label>
+                    <p className="text-lg font-semibold">{selectedOS.solicitante}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Setor</label>
+                    <p className="text-lg font-semibold">{selectedOS.setor}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Data da Solicitação</label>
+                    <p className="text-lg font-semibold">
+                      {new Date(selectedOS.data_solicitacao).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Local/Equipamento</label>
+                    <p className="text-lg font-semibold">{selectedOS.local_equipamento}</p>
+                  </div>
+                </div>
+
+                {/* Status e Prioridade */}
+                <div className="flex gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Status</label>
+                    <Badge 
+                      className={`rounded-xl ${
+                        selectedOS.status === 'pendente' ? 'bg-yellow-100 text-yellow-800' :
+                        selectedOS.status === 'em_execucao' ? 'bg-blue-100 text-blue-800' :
+                        selectedOS.status === 'concluida' ? 'bg-green-100 text-green-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {selectedOS.status === 'pendente' ? 'Pendente' :
+                       selectedOS.status === 'em_execucao' ? 'Em Execução' :
+                       selectedOS.status === 'concluida' ? 'Concluída' : 'Cancelada'}
+                    </Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Prioridade</label>
+                    <Badge 
+                      className={`rounded-xl ${
+                        selectedOS.prioridade === 'alta' ? 'bg-red-100 text-red-800' :
+                        selectedOS.prioridade === 'media' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-green-100 text-green-800'
+                      }`}
+                    >
+                      {selectedOS.prioridade === 'alta' ? 'Alta' :
+                       selectedOS.prioridade === 'media' ? 'Média' : 'Baixa'}
+                    </Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Tipo</label>
+                    <Badge variant="outline" className="rounded-xl">
+                      {selectedOS.tipo_manutencao === 'predial' ? 'Predial' : 'Mecânica'}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Descrição */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Descrição do Problema</label>
+                  <div className="p-4 bg-muted/50 rounded-2xl">
+                    <p className="text-base">{selectedOS.descricao}</p>
+                  </div>
+                </div>
+
+                {/* Fotos */}
+                {selectedOS.fotos && selectedOS.fotos.length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Fotos Anexadas</label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {selectedOS.fotos.map((foto, index) => (
+                        <div key={index} className="aspect-square rounded-2xl overflow-hidden bg-muted">
+                          <img 
+                            src={foto} 
+                            alt={`Foto ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Informações de Sistema */}
+                <div className="pt-4 border-t">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+                    <div>
+                      <span className="font-medium">Criado em:</span> {new Date(selectedOS.created_at).toLocaleString('pt-BR')}
+                    </div>
+                    <div>
+                      <span className="font-medium">Última atualização:</span> {new Date(selectedOS.updated_at).toLocaleString('pt-BR')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ações */}
+              <div className="flex gap-3 mt-6 pt-6 border-t">
+                <Button className="flex-1 rounded-2xl">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Imprimir OS
+                </Button>
+                <Button variant="outline" className="flex-1 rounded-2xl">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Adicionar Comentário
+                </Button>
+                <Button variant="outline" className="rounded-2xl">
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
