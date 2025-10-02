@@ -556,9 +556,9 @@ export function DesignaliCreative() {
                       <h2 className="text-2xl font-semibold">Ordens de Serviço Recentes</h2>
                     </div>
                     <div className="rounded-3xl border">
-                      {recentWorkOrders.length > 0 ? (
+                      {maintenanceRequests.length > 0 ? (
                       <div className="grid grid-cols-1 divide-y">
-                        {recentWorkOrders.map((order) => (
+                        {maintenanceRequests.slice(0, 5).map((order) => (
                           <motion.div
                             key={order.id}
                             whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
@@ -566,21 +566,39 @@ export function DesignaliCreative() {
                           >
                             <div className="flex items-center gap-3">
                               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted">
-                                {order.icon}
+                                <FileText className="h-5 w-5" />
                               </div>
                               <div>
-                                <p className="font-medium">{order.title}</p>
+                                <p className="font-medium">{order.solicitante}</p>
                                 <p className="text-sm text-muted-foreground">
-                                  {order.sector} • {order.created}
+                                  {order.setor} • {new Date(order.created_at).toLocaleDateString('pt-BR')}
                                 </p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="rounded-xl">
-                                {order.priority}
+                              <Badge 
+                                variant="outline" 
+                                className={`rounded-xl ${
+                                  order.prioridade === 'alta' ? 'bg-red-100 text-red-800' :
+                                  order.prioridade === 'media' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-green-100 text-green-800'
+                                }`}
+                              >
+                                {order.prioridade === 'alta' ? 'Alta' :
+                                 order.prioridade === 'media' ? 'Média' : 'Baixa'}
                               </Badge>
-                              <Badge variant="outline" className="rounded-xl">
-                                {order.status}
+                              <Badge 
+                                variant="outline" 
+                                className={`rounded-xl ${
+                                  order.status === 'pendente' ? 'bg-yellow-100 text-yellow-800' :
+                                  order.status === 'em_execucao' ? 'bg-blue-100 text-blue-800' :
+                                  order.status === 'concluida' ? 'bg-green-100 text-green-800' :
+                                  'bg-gray-100 text-gray-800'
+                                }`}
+                              >
+                                {order.status === 'pendente' ? 'Pendente' :
+                                 order.status === 'em_execucao' ? 'Em Execução' :
+                                 order.status === 'concluida' ? 'Concluída' : 'Cancelada'}
                               </Badge>
                               <Button variant="ghost" size="sm" className="rounded-xl">
                                 Ver OS
