@@ -107,6 +107,10 @@ export function DesignaliCreative() {
     concluidas: 0,
     prioridade_alta: 0,
   })
+  const [maintenanceTypeStats, setMaintenanceTypeStats] = useState({
+    mecanica: 0,
+    predial: 0,
+  })
 
   const handleSidebarClick = (key: string) => {
     setActiveTab(key)
@@ -116,6 +120,34 @@ export function DesignaliCreative() {
   const handleViewOS = (os: MaintenanceRequest) => {
     setSelectedOS(os)
     setShowOSModal(true)
+  }
+
+  const handleCompleteOS = async (osId: string) => {
+    try {
+      const { error } = await supabase
+        .from('maintenance_requests')
+        .update({ 
+          status: 'concluida',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', osId)
+
+      if (error) {
+        console.error('Erro ao concluir OS:', error)
+        return
+      }
+
+      // Recarregar dados
+      await loadMaintenanceRequests()
+      
+      // Fechar modal
+      setShowOSModal(false)
+      setSelectedOS(null)
+      
+      console.log('OS concluída com sucesso!')
+    } catch (error) {
+      console.error('Erro ao concluir OS:', error)
+    }
   }
 
   const formatDate = (dateString: string | undefined) => {
@@ -143,8 +175,17 @@ export function DesignaliCreative() {
         concluidas: data?.filter(r => r.status === 'concluida').length || 0,
         prioridade_alta: data?.filter(r => r.prioridade === 'alta').length || 0,
       }
+      
+      // Calcular estatísticas por tipo de manutenção
+      const newMaintenanceTypeStats = {
+        mecanica: data?.filter(r => r.tipo_manutencao === 'mecanica').length || 0,
+        predial: data?.filter(r => r.tipo_manutencao === 'predial').length || 0,
+      }
+      
       console.log('Estatísticas calculadas:', newStats)
+      console.log('Estatísticas por tipo:', newMaintenanceTypeStats)
       setStats(newStats)
+      setMaintenanceTypeStats(newMaintenanceTypeStats)
       setNotifications(newStats.pendentes + newStats.prioridade_alta)
     } catch (error) {
       console.error('Erro ao carregar solicitações:', error)
@@ -547,7 +588,7 @@ export function DesignaliCreative() {
                                   <span className="text-sm font-medium text-muted-foreground">Status: Ativo</span>
                                 </div>
                                 <Badge variant="outline" className="rounded-xl">
-                                  {type.count} OS ativas
+                                  {type.name === 'Mecânica' ? maintenanceTypeStats.mecanica : maintenanceTypeStats.predial} OS ativas
                                 </Badge>
                               </div>
                               
@@ -1141,6 +1182,16 @@ export function DesignaliCreative() {
 
               {/* Ações */}
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t">
+                {selectedOS.status !== 'concluida' && (
+                  <Button 
+                    onClick={() => selectedOS.id && handleCompleteOS(selectedOS.id)}
+                    className="flex-1 rounded-2xl text-sm sm:text-base bg-green-600 hover:bg-green-700"
+                  >
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Concluir OS</span>
+                    <span className="sm:hidden">Concluir</span>
+                  </Button>
+                )}
                 <Button className="flex-1 rounded-2xl text-sm sm:text-base">
                   <FileText className="mr-2 h-4 w-4" />
                   <span className="hidden sm:inline">Imprimir OS</span>
