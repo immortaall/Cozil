@@ -751,14 +751,14 @@ export function DesignaliCreative() {
                               </div>
                         <Badge variant="outline" className="rounded-xl">
                           {maintenanceRequests.length} OS encontradas
-                        </Badge>
-                            </div>
+                                    </Badge>
+                                </div>
                     </CardHeader>
                     <CardContent>
                       {loading ? (
                         <div className="flex items-center justify-center p-12">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        </div>
+                              </div>
                       ) : maintenanceRequests.length > 0 ? (
                         <div className="space-y-4">
                           {maintenanceRequests.map((request) => (
@@ -796,7 +796,7 @@ export function DesignaliCreative() {
                                        request.status === 'em_execucao' ? 'Em Execução' :
                                        request.status === 'concluida' ? 'Concluída' : 'Cancelada'}
                                     </Badge>
-                                  </div>
+                          </div>
                                   <p className="text-sm text-muted-foreground mb-2">
                                     <strong>Setor:</strong> {request.setor} • <strong>Local:</strong> {request.local_equipamento}
                                   </p>
@@ -807,11 +807,11 @@ export function DesignaliCreative() {
                                   <p className="text-xs text-muted-foreground mt-2">
                                     Criado em: {new Date(request.created_at || '').toLocaleDateString('pt-BR')}
                                   </p>
-                                </div>
+                        </div>
                               </div>
                             </motion.div>
                           ))}
-                        </div>
+                            </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center p-12 text-center">
                           <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted mb-6">
@@ -825,8 +825,8 @@ export function DesignaliCreative() {
                             <Button className="rounded-2xl flex-1 sm:flex-none" onClick={loadMaintenanceRequests}>
                               <RefreshCw className="mr-2 h-4 w-4" />
                               Atualizar
-                            </Button>
-                          </div>
+                        </Button>
+                      </div>
                         </div>
                       )}
                     </CardContent>

@@ -14,7 +14,11 @@ export async function POST(request: NextRequest) {
       prioridade: mapPriority(body['Prioridade']),
       tipo_manutencao: mapMaintenanceType(body['Tipo de Manutenção']),
       descricao: body['Descreva o serviço...'] || '',
-      fotos: body['Upload de Foto do Problema'] ? [body['Upload de Foto do Problema']] : [],
+      fotos: body['Upload de Foto do Problema'] ? 
+        (Array.isArray(body['Upload de Foto do Problema']) 
+          ? body['Upload de Foto do Problema'] 
+          : [body['Upload de Foto do Problema']]) 
+        : [],
       status: 'pendente' as const
     }
 
