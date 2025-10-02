@@ -16,6 +16,7 @@ export interface MaintenanceRequest {
   tipo_manutencao: 'predial' | 'mecanica'
   descricao: string
   fotos?: string[]
+  fotos_url?: string[]
   status: 'pendente' | 'em_execucao' | 'concluida' | 'cancelada'
   created_at?: string
   updated_at?: string

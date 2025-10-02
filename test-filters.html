@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Filtros - Cozil</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .filter-btn {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .filter-btn:hover {
+            background: #0056b3;
+        }
+        .advanced-filters {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .advanced-filters.show {
+            display: block;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .filter-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .test-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .test-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .test-card p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Filtros - Cozil</h1>
+        <p>Este é um teste para verificar se os filtros estão funcionando corretamente.</p>
+        
+        <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Buscar por ID, solicitante, setor ou descrição..." id="searchInput">
+            <button class="filter-btn" onclick="toggleFilters()">🔍 Filtros</button>
+            <button class="filter-btn" onclick="clearFilters()">🔄 Limpar</button>
+        </div>
+        
+        <div class="advanced-filters" id="advancedFilters">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="all">Todos</option>
+                        <option value="pending">Pendente</option>
+                        <option value="in-progress">Em Execução</option>
+                        <option value="completed">Concluída</option>
+                        <option value="cancelled">Cancelada</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Prioridade</label>
+                    <select id="priorityFilter">
+                        <option value="all">Todas</option>
+                        <option value="low">Baixa</option>
+                        <option value="medium">Média</option>
+                        <option value="high">Alta</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tipo</label>
+                    <select id="typeFilter">
+                        <option value="all">Todos</option>
+                        <option value="predial">Predial</option>
+                        <option value="mecanica">Mecânica</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Setor</label>
+                    <select id="sectorFilter">
+                        <option value="all">Todos</option>
+                        <option value="Portaria">Portaria</option>
+                        <option value="Recepção">Recepção</option>
+                        <option value="RH">RH</option>
+                        <option value="Comercial">Comercial</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <h2>📋 Cards de Teste</h2>
+        <div id="testCards">
+            <div class="test-card">
+                <h4>João Silva</h4>
+                <p><strong>Setor:</strong> Portaria • <strong>Local:</strong> Portão Principal</p>
+                <p><strong>Tipo:</strong> Predial • <strong>Status:</strong> Pendente • <strong>Prioridade:</strong> Alta</p>
+                <p><strong>Descrição:</strong> Problema na fechadura do portão principal</p>
+            </div>
+            <div class="test-card">
+                <h4>Maria Santos</h4>
+                <p><strong>Setor:</strong> RH • <strong>Local:</strong> Sala de Reuniões</p>
+                <p><strong>Tipo:</strong> Mecânica • <strong>Status:</strong> Em Execução • <strong>Prioridade:</strong> Média</p>
+                <p><strong>Descrição:</strong> Ar condicionado não está funcionando</p>
+            </div>
+            <div class="test-card">
+                <h4>Pedro Costa</h4>
+                <p><strong>Setor:</strong> Comercial • <strong>Local:</strong> Escritório</p>
+                <p><strong>Tipo:</strong> Predial • <strong>Status:</strong> Concluída • <strong>Prioridade:</strong> Baixa</p>
+                <p><strong>Descrição:</strong> Pintura da parede concluída</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 8px;">
+            <h3>✅ Teste Concluído</h3>
+            <p>Se você consegue ver esta página e os filtros funcionam, então o problema pode estar no cache do navegador ou no deploy do Vercel.</p>
+            <p><strong>Próximos passos:</strong></p>
+            <ul>
+                <li>Limpe o cache do navegador (Ctrl+F5)</li>
+                <li>Aguarde 2-3 minutos para o Vercel fazer o deploy</li>
+                <li>Teste em uma aba anônima</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleFilters() {
+            const filters = document.getElementById('advancedFilters');
+            filters.classList.toggle('show');
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('priorityFilter').value = 'all';
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('sectorFilter').value = 'all';
+        }
+        
+        // Auto-apply search
+        document.getElementById('searchInput').addEventListener('input', function() {
+            console.log('Pesquisando:', this.value);
+        });
+    </script>
+</body>
+</html>
