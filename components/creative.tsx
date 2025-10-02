@@ -150,6 +150,116 @@ export function DesignaliCreative() {
     }
   }
 
+  const handlePrintOS = () => {
+    if (!selectedOS) return
+    
+    // Criar conteúdo para impressão
+    const printContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+        <h1 style="text-align: center; color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">
+          ORDEM DE SERVIÇO - OS #${selectedOS.id?.slice(-8)}
+        </h1>
+        
+        <div style="margin: 20px 0;">
+          <h2 style="color: #666; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Informações Básicas</h2>
+          <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd; background: #f5f5f5; font-weight: bold;">Solicitante:</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${selectedOS.solicitante}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd; background: #f5f5f5; font-weight: bold;">Setor:</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${selectedOS.setor}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd; background: #f5f5f5; font-weight: bold;">Data da Solicitação:</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${new Date(selectedOS.data_solicitacao).toLocaleDateString('pt-BR')}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd; background: #f5f5f5; font-weight: bold;">Local/Equipamento:</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${selectedOS.local_equipamento}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd; background: #f5f5f5; font-weight: bold;">Prioridade:</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${selectedOS.prioridade === 'alta' ? 'Alta' : selectedOS.prioridade === 'media' ? 'Média' : 'Baixa'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd; background: #f5f5f5; font-weight: bold;">Tipo:</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${selectedOS.tipo_manutencao === 'predial' ? 'Predial' : 'Mecânica'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd; background: #f5f5f5; font-weight: bold;">Status:</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${selectedOS.status === 'pendente' ? 'Pendente' : selectedOS.status === 'em_execucao' ? 'Em Execução' : selectedOS.status === 'concluida' ? 'Concluída' : 'Cancelada'}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <h2 style="color: #666; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Descrição do Problema</h2>
+          <div style="padding: 15px; border: 1px solid #ddd; background: #f9f9f9; margin: 10px 0;">
+            ${selectedOS.descricao}
+          </div>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <h2 style="color: #666; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Informações de Sistema</h2>
+          <p><strong>Criado em:</strong> ${formatDate(selectedOS.created_at)}</p>
+          <p><strong>Última atualização:</strong> ${formatDate(selectedOS.updated_at)}</p>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center; color: #666; font-size: 12px;">
+          <p>Documento gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+        </div>
+      </div>
+    `
+    
+    // Abrir janela de impressão
+    const printWindow = window.open('', '_blank')
+    if (printWindow) {
+      printWindow.document.write(printContent)
+      printWindow.document.close()
+      printWindow.focus()
+      printWindow.print()
+    }
+  }
+
+  const handleAddComment = () => {
+    const comment = prompt('Adicione um comentário sobre esta OS:')
+    if (comment && selectedOS?.id) {
+      // Aqui você pode implementar a lógica para salvar o comentário
+      console.log('Comentário adicionado:', comment)
+      alert('Comentário adicionado com sucesso!')
+    }
+  }
+
+  const handleEditOS = () => {
+    if (!selectedOS) return
+    
+    // Por enquanto, vamos mostrar um alerta com as opções de edição
+    const newStatus = prompt(`Editar status da OS (atual: ${selectedOS.status}):\n\nOpções: pendente, em_execucao, concluida, cancelada`)
+    
+    if (newStatus && ['pendente', 'em_execucao', 'concluida', 'cancelada'].includes(newStatus)) {
+      // Atualizar status no banco
+      supabase
+        .from('maintenance_requests')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', selectedOS.id)
+        .then(() => {
+          loadMaintenanceRequests()
+          setShowOSModal(false)
+          setSelectedOS(null)
+          alert('OS atualizada com sucesso!')
+        })
+        .catch(error => {
+          console.error('Erro ao atualizar OS:', error)
+          alert('Erro ao atualizar OS')
+        })
+    }
+  }
+
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'N/A'
     try {
@@ -1182,17 +1292,28 @@ export function DesignaliCreative() {
                     <span className="sm:hidden">Concluir</span>
                   </Button>
                 )}
-                <Button className="flex-1 rounded-2xl text-sm sm:text-base">
+                <Button 
+                  onClick={handlePrintOS}
+                  className="flex-1 rounded-2xl text-sm sm:text-base"
+                >
                   <FileText className="mr-2 h-4 w-4" />
                   <span className="hidden sm:inline">Imprimir OS</span>
                   <span className="sm:hidden">Imprimir</span>
                 </Button>
-                <Button variant="outline" className="flex-1 rounded-2xl text-sm sm:text-base">
+                <Button 
+                  onClick={handleAddComment}
+                  variant="outline" 
+                  className="flex-1 rounded-2xl text-sm sm:text-base"
+                >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   <span className="hidden sm:inline">Adicionar Comentário</span>
                   <span className="sm:hidden">Comentário</span>
                 </Button>
-                <Button variant="outline" className="rounded-2xl">
+                <Button 
+                  onClick={handleEditOS}
+                  variant="outline" 
+                  className="rounded-2xl"
+                >
                   <Edit className="h-4 w-4" />
                 </Button>
               </div>
