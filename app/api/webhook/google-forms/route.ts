@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { insertMaintenanceRequest } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +31,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Inserir no banco de dados
-    const result = await insertMaintenanceRequest(maintenanceData)
+    const { data: result, error } = await supabase
+      .from('maintenance_requests')
+      .insert([maintenanceData])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Erro ao inserir no Supabase:', error)
+      return NextResponse.json(
+        { error: 'Erro ao salvar no banco de dados' },
+        { status: 500 }
+      )
+    }
 
     console.log('Nova solicitação recebida do Google Forms:', result)
 

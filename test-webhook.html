@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Webhook</title>
+</head>
+<body>
+    <h1>Teste do Webhook</h1>
+    <button onclick="testWebhook()">Testar Webhook</button>
+    <div id="result"></div>
+
+    <script>
+        async function testWebhook() {
+            const testData = {
+                "Solicitante": "Teste Manual",
+                "Setor": "Portaria",
+                "Data da solicitação": "2024-01-15",
+                "Local/Equipamento": "Portão Principal",
+                "Prioridade": "Alta",
+                "Tipo de Manutenção": "Predial",
+                "Descreva o serviço...": "Teste de funcionamento do webhook"
+            };
+
+            try {
+                const response = await fetch('https://cozil-y3i2.vercel.app/api/webhook/google-forms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 
+                    `<h3>Resultado:</h3>
+                     <p>Status: ${response.status}</p>
+                     <p>Resposta: ${JSON.stringify(result, null, 2)}</p>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<h3>Erro:</h3>
+                     <p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
