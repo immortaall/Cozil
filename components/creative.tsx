@@ -123,9 +123,17 @@ export function DesignaliCreative() {
 
   const handleViewOS = (os: MaintenanceRequest) => {
     console.log('handleViewOS chamado com:', os)
+    console.log('Estado atual showOSModal:', showOSModal)
+    console.log('Estado atual selectedOS:', selectedOS)
     setSelectedOS(os)
     setShowOSModal(true)
     console.log('Modal deve estar aberto agora')
+    
+    // Verificar se o modal foi aberto após um pequeno delay
+    setTimeout(() => {
+      console.log('Estado após delay showOSModal:', showOSModal)
+      console.log('Estado após delay selectedOS:', selectedOS)
+    }, 100)
   }
 
   const handleCompleteOS = async (osId: string) => {
@@ -1348,7 +1356,7 @@ export function DesignaliCreative() {
 
       {/* Modal de Edição de Status */}
       {showEditModal && selectedOS && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-2 sm:p-4">
           <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-md mx-2 sm:mx-0 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
               <h3 className="text-lg sm:text-xl font-semibold">Editar Status da OS</h3>
