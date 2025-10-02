@@ -610,9 +610,9 @@ export function DesignaliCreative() {
                         <CardContent className="p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1 flex-1 min-w-0">
-                              <p className="text-sm font-medium text-muted-foreground">Em Execução</p>
-                              <p className="text-2xl sm:text-3xl font-bold text-blue-600">{stats.em_execucao}</p>
-                              <p className="text-xs text-muted-foreground hidden sm:block">Em andamento</p>
+                              <p className="text-sm font-medium text-muted-foreground">Todos OS</p>
+                              <p className="text-2xl sm:text-3xl font-bold text-blue-600">{maintenanceRequests.length}</p>
+                              <p className="text-xs text-muted-foreground hidden sm:block">Total de ordens</p>
                           </div>
                             <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 flex-shrink-0">
                               <PlayCircle className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600" />
