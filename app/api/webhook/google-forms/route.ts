@@ -5,6 +5,9 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
+    // Log para debug
+    console.log('Webhook recebido:', JSON.stringify(body, null, 2))
+    
     // Mapear os dados do Google Forms para nosso formato
     const maintenanceData = {
       solicitante: body['Solicitante'] || '',
@@ -51,6 +54,12 @@ export async function POST(request: NextRequest) {
       success: true, 
       id: result.id,
       message: 'Solicitação salva com sucesso' 
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
     })
 
   } catch (error) {
@@ -88,4 +97,16 @@ function mapMaintenanceType(type: string): 'predial' | 'mecanica' {
     default:
       return 'predial' // padrão
   }
+}
+
+// Método OPTIONS para CORS
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    }
+  })
 }
