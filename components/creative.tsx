@@ -1019,14 +1019,14 @@ export function DesignaliCreative() {
 
       {/* Modal de Detalhes da OS */}
       {showOSModal && selectedOS && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0">
+            <div className="p-4 sm:p-6">
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold">Detalhes da OS</h2>
-                  <p className="text-muted-foreground">Ordem de Serviço #{selectedOS.id?.slice(-8)}</p>
+                  <h2 className="text-xl sm:text-2xl font-bold">Detalhes da OS</h2>
+                  <p className="text-sm sm:text-base text-muted-foreground">Ordem de Serviço #{selectedOS.id?.slice(-8)}</p>
                 </div>
                 <Button 
                   variant="ghost" 
@@ -1039,9 +1039,9 @@ export function DesignaliCreative() {
               </div>
 
               {/* Conteúdo */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Informações Básicas */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">Solicitante</label>
                     <p className="text-lg font-semibold">{selectedOS.solicitante}</p>
@@ -1063,7 +1063,7 @@ export function DesignaliCreative() {
                 </div>
 
                 {/* Status e Prioridade */}
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-2 sm:gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">Status</label>
                     <Badge 
@@ -1112,7 +1112,7 @@ export function DesignaliCreative() {
                 {selectedOS.fotos && selectedOS.fotos.length > 0 && (
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">Fotos Anexadas</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                       {selectedOS.fotos.map((foto, index) => (
                         <div key={index} className="aspect-square rounded-2xl overflow-hidden bg-muted">
                           <img 
@@ -1127,8 +1127,8 @@ export function DesignaliCreative() {
                 )}
 
                 {/* Informações de Sistema */}
-                <div className="pt-4 border-t">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+                <div className="pt-3 sm:pt-4 border-t">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                     <div>
                       <span className="font-medium">Criado em:</span> {formatDate(selectedOS.created_at)}
                     </div>
@@ -1140,14 +1140,16 @@ export function DesignaliCreative() {
               </div>
 
               {/* Ações */}
-              <div className="flex gap-3 mt-6 pt-6 border-t">
-                <Button className="flex-1 rounded-2xl">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t">
+                <Button className="flex-1 rounded-2xl text-sm sm:text-base">
                   <FileText className="mr-2 h-4 w-4" />
-                  Imprimir OS
+                  <span className="hidden sm:inline">Imprimir OS</span>
+                  <span className="sm:hidden">Imprimir</span>
                 </Button>
-                <Button variant="outline" className="flex-1 rounded-2xl">
+                <Button variant="outline" className="flex-1 rounded-2xl text-sm sm:text-base">
                   <MessageSquare className="mr-2 h-4 w-4" />
-                  Adicionar Comentário
+                  <span className="hidden sm:inline">Adicionar Comentário</span>
+                  <span className="sm:hidden">Comentário</span>
                 </Button>
                 <Button variant="outline" className="rounded-2xl">
                   <Edit className="h-4 w-4" />
