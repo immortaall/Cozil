@@ -1343,15 +1343,15 @@ export function DesignaliCreative() {
 
       {/* Modal de Edição de Status */}
       {showEditModal && selectedOS && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-md mx-2">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold">Editar Status da OS</h3>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-md mx-2 sm:mx-0 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold">Editar Status da OS</h3>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowEditModal(false)}
-                className="rounded-2xl"
+                className="rounded-2xl h-8 w-8 sm:h-10 sm:w-10"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -1360,7 +1360,7 @@ export function DesignaliCreative() {
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  Status Atual: <span className="font-semibold text-blue-600">
+                  Status Atual: <span className="font-semibold text-blue-600 text-sm sm:text-base">
                     {selectedOS.status === 'pendente' ? 'Pendente' :
                      selectedOS.status === 'em_execucao' ? 'Em Execução' :
                      selectedOS.status === 'concluida' ? 'Concluída' : 'Cancelada'}
@@ -1375,7 +1375,7 @@ export function DesignaliCreative() {
                 <select
                   value={editStatus}
                   onChange={(e) => setEditStatus(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-3 text-sm sm:text-base border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="pendente">Pendente</option>
                   <option value="em_execucao">Em Execução</option>
@@ -1384,17 +1384,17 @@ export function DesignaliCreative() {
                 </select>
               </div>
               
-              <div className="flex gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button
                   onClick={() => setShowEditModal(false)}
                   variant="outline"
-                  className="flex-1 rounded-2xl"
+                  className="flex-1 rounded-2xl text-sm sm:text-base py-2 sm:py-3"
                 >
                   Cancelar
                 </Button>
                 <Button
                   onClick={handleSaveEdit}
-                  className="flex-1 rounded-2xl bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 rounded-2xl bg-blue-600 hover:bg-blue-700 text-sm sm:text-base py-2 sm:py-3"
                 >
                   Salvar Alterações
                 </Button>
