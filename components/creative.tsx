@@ -122,8 +122,10 @@ export function DesignaliCreative() {
   }
 
   const handleViewOS = (os: MaintenanceRequest) => {
+    console.log('handleViewOS chamado com:', os)
     setSelectedOS(os)
     setShowOSModal(true)
+    console.log('Modal deve estar aberto agora')
   }
 
   const handleCompleteOS = async (osId: string) => {
@@ -1008,7 +1010,10 @@ export function DesignaliCreative() {
                                   variant="ghost" 
                                   size="sm" 
                                   className="rounded-xl"
-                                  onClick={() => handleViewOS(request)}
+                                  onClick={() => {
+                                    console.log('Botão Ver OS clicado para:', request)
+                                    handleViewOS(request)
+                                  }}
                                 >
                                   Ver OS
                                 </Button>
