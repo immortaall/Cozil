@@ -113,7 +113,9 @@ export function DesignaliCreative() {
   const loadMaintenanceRequests = async () => {
     setLoading(true)
     try {
+      console.log('Carregando dados do Supabase...')
       const data = await getFilteredMaintenanceRequests(filters)
+      console.log('Dados recebidos:', data)
       setMaintenanceRequests(data || [])
       
       // Calcular estatísticas
@@ -123,6 +125,7 @@ export function DesignaliCreative() {
         concluidas: data?.filter(r => r.status === 'concluida').length || 0,
         prioridade_alta: data?.filter(r => r.prioridade === 'alta').length || 0,
       }
+      console.log('Estatísticas calculadas:', newStats)
       setStats(newStats)
       setNotifications(newStats.pendentes + newStats.prioridade_alta)
     } catch (error) {
