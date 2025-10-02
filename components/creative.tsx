@@ -113,6 +113,8 @@ export function DesignaliCreative() {
     predial: 0,
   })
   const [showFilters, setShowFilters] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editStatus, setEditStatus] = useState('')
 
   const handleSidebarClick = (key: string) => {
     setActiveTab(key)
@@ -236,29 +238,37 @@ export function DesignaliCreative() {
 
   const handleEditOS = () => {
     if (!selectedOS) return
+    setEditStatus(selectedOS.status)
+    setShowEditModal(true)
+  }
+
+  const handleSaveEdit = async () => {
+    if (!selectedOS || !editStatus) return
     
-    // Por enquanto, vamos mostrar um alerta com as opções de edição
-    const newStatus = prompt(`Editar status da OS (atual: ${selectedOS.status}):\n\nOpções: pendente, em_execucao, concluida, cancelada`)
-    
-    if (newStatus && ['pendente', 'em_execucao', 'concluida', 'cancelada'].includes(newStatus)) {
-      // Atualizar status no banco
-      supabase
+    try {
+      const { error } = await supabase
         .from('maintenance_requests')
         .update({ 
-          status: newStatus,
+          status: editStatus,
           updated_at: new Date().toISOString()
         })
         .eq('id', selectedOS.id)
-        .then(() => {
-          loadMaintenanceRequests()
-          setShowOSModal(false)
-          setSelectedOS(null)
-          alert('OS atualizada com sucesso!')
-        })
-        .catch(error => {
-          console.error('Erro ao atualizar OS:', error)
-          alert('Erro ao atualizar OS')
-        })
+
+      if (error) {
+        console.error('Erro ao atualizar OS:', error)
+        alert('Erro ao atualizar OS')
+      } else {
+        console.log('OS atualizada com sucesso')
+        // Recarregar dados
+        loadMaintenanceRequests()
+        // Fechar modais
+        setShowEditModal(false)
+        setSelectedOS(null)
+        setShowOSModal(false)
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar OS:', error)
+      alert('Erro ao atualizar OS')
     }
   }
 
@@ -1324,6 +1334,69 @@ export function DesignaliCreative() {
                   className="rounded-2xl"
                 >
                   <Edit className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Edição de Status */}
+      {showEditModal && selectedOS && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md mx-2">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold">Editar Status da OS</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowEditModal(false)}
+                className="rounded-2xl"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Status Atual: <span className="font-semibold text-blue-600">
+                    {selectedOS.status === 'pendente' ? 'Pendente' :
+                     selectedOS.status === 'em_execucao' ? 'Em Execução' :
+                     selectedOS.status === 'concluida' ? 'Concluída' : 'Cancelada'}
+                  </span>
+                </label>
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Novo Status
+                </label>
+                <select
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="pendente">Pendente</option>
+                  <option value="em_execucao">Em Execução</option>
+                  <option value="concluida">Concluída</option>
+                  <option value="cancelada">Cancelada</option>
+                </select>
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  onClick={() => setShowEditModal(false)}
+                  variant="outline"
+                  className="flex-1 rounded-2xl"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={handleSaveEdit}
+                  className="flex-1 rounded-2xl bg-blue-600 hover:bg-blue-700"
+                >
+                  Salvar Alterações
                 </Button>
               </div>
             </div>
