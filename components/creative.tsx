@@ -111,6 +111,7 @@ export function DesignaliCreative() {
     mecanica: 0,
     predial: 0,
   })
+  const [showFilters, setShowFilters] = useState(false)
 
   const handleSidebarClick = (key: string) => {
     setActiveTab(key)
@@ -809,26 +810,51 @@ export function DesignaliCreative() {
                     </motion.div>
                   </section>
 
-                  {/* Filtros */}
+                  {/* Barra de Pesquisa e Filtros Compactos */}
                   <Card className="rounded-3xl">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Search className="h-5 w-5" />
-                        Filtros e Busca
-                      </CardTitle>
-                      <CardDescription>Filtre as ordens de serviço por diferentes critérios</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium">Buscar</label>
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex gap-3 items-center">
+                        <div className="flex-1">
                           <Input
-                            placeholder="Buscar por ID, título ou setor..."
+                            placeholder="Buscar por ID, solicitante, setor ou descrição..."
                             className="rounded-2xl"
                             value={filters.search}
                             onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                           />
                         </div>
+                        <Button 
+                          variant="outline" 
+                          size="icon"
+                          className="rounded-2xl"
+                          onClick={() => setShowFilters(!showFilters)}
+                        >
+                          <Filter className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="icon"
+                          className="rounded-2xl"
+                          onClick={() => setFilters({
+                            status: "all",
+                            priority: "all", 
+                            type: "all",
+                            sector: "all",
+                            search: "",
+                          })}
+                        >
+                          <RefreshCw className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      
+                      {/* Filtros Avançados (Colapsáveis) */}
+                      {showFilters && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="mt-4 space-y-4"
+                        >
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div className="space-y-2">
                           <label className="text-sm font-medium">Status</label>
                           <Select
@@ -902,27 +928,9 @@ export function DesignaliCreative() {
                             </SelectContent>
                           </Select>
                         </div>
-                        </div>
-                      <div className="flex flex-col sm:flex-row gap-2 pt-2">
-                              <Button
-                                variant="outline"
-                          className="rounded-2xl flex-1 sm:flex-none"
-                          onClick={() => setFilters({
-                            status: "all",
-                            priority: "all",
-                            type: "all",
-                            sector: "all",
-                            search: "",
-                          })}
-                        >
-                          <X className="mr-2 h-4 w-4" />
-                          Limpar Filtros
-                        </Button>
-                        <Button className="rounded-2xl flex-1 sm:flex-none" onClick={applyFilters}>
-                          <Search className="mr-2 h-4 w-4" />
-                          Aplicar Filtros
-                              </Button>
-                            </div>
+                          </div>
+                        </motion.div>
+                      )}
                     </CardContent>
                   </Card>
 
@@ -951,48 +959,53 @@ export function DesignaliCreative() {
                               key={request.id}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="border rounded-2xl p-4 hover:shadow-md transition-shadow"
+                              whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
+                              className="flex items-center justify-between p-4 border rounded-2xl hover:shadow-md transition-all"
                             >
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <h4 className="font-semibold">{request.solicitante}</h4>
-                                    <Badge 
-                                      variant="outline" 
-                                      className={`rounded-xl ${
-                                        request.prioridade === 'alta' ? 'border-red-500 text-red-600' :
-                                        request.prioridade === 'media' ? 'border-yellow-500 text-yellow-600' :
-                                        'border-green-500 text-green-600'
-                                      }`}
-                                    >
-                                      {request.prioridade === 'alta' ? 'Alta' : 
-                                       request.prioridade === 'media' ? 'Média' : 'Baixa'}
-                                    </Badge>
-                                    <Badge 
-                                      variant="outline" 
-                                      className={`rounded-xl ${
-                                        request.status === 'pendente' ? 'border-yellow-500 text-yellow-600' :
-                                        request.status === 'em_execucao' ? 'border-blue-500 text-blue-600' :
-                                        request.status === 'concluida' ? 'border-green-500 text-green-600' :
-                                        'border-gray-500 text-gray-600'
-                                      }`}
-                                    >
-                                      {request.status === 'pendente' ? 'Pendente' :
-                                       request.status === 'em_execucao' ? 'Em Execução' :
-                                       request.status === 'concluida' ? 'Concluída' : 'Cancelada'}
-                                    </Badge>
-                          </div>
-                                  <p className="text-sm text-muted-foreground mb-2">
-                                    <strong>Setor:</strong> {request.setor} • <strong>Local:</strong> {request.local_equipamento}
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted">
+                                  <FileText className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="font-medium">{request.solicitante}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {request.setor} • {request.created_at ? new Date(request.created_at).toLocaleDateString('pt-BR') : 'N/A'}
                                   </p>
-                                  <p className="text-sm text-muted-foreground mb-2">
-                                    <strong>Tipo:</strong> {request.tipo_manutencao === 'mecanica' ? 'Mecânica' : 'Predial'}
-                                  </p>
-                                  <p className="text-sm">{request.descricao}</p>
-                                  <p className="text-xs text-muted-foreground mt-2">
-                                    Criado em: {new Date(request.created_at || '').toLocaleDateString('pt-BR')}
-                                  </p>
-                        </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge 
+                                  variant="outline" 
+                                  className={`rounded-xl ${
+                                    request.prioridade === 'alta' ? 'bg-red-100 text-red-800' :
+                                    request.prioridade === 'media' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-green-100 text-green-800'
+                                  }`}
+                                >
+                                  {request.prioridade === 'alta' ? 'Alta' :
+                                   request.prioridade === 'media' ? 'Média' : 'Baixa'}
+                                </Badge>
+                                <Badge 
+                                  variant="outline" 
+                                  className={`rounded-xl ${
+                                    request.status === 'pendente' ? 'bg-yellow-100 text-yellow-800' :
+                                    request.status === 'em_execucao' ? 'bg-blue-100 text-blue-800' :
+                                    request.status === 'concluida' ? 'bg-green-100 text-green-800' :
+                                    'bg-gray-100 text-gray-800'
+                                  }`}
+                                >
+                                  {request.status === 'pendente' ? 'Pendente' :
+                                   request.status === 'em_execucao' ? 'Em Execução' :
+                                   request.status === 'concluida' ? 'Concluída' : 'Cancelada'}
+                                </Badge>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="rounded-xl"
+                                  onClick={() => handleViewOS(request)}
+                                >
+                                  Ver OS
+                                </Button>
                               </div>
                             </motion.div>
                           ))}
