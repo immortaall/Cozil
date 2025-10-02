@@ -592,16 +592,6 @@ export function DesignaliCreative() {
                                 </Badge>
                               </div>
                               
-                              <div className="space-y-2">
-                                <p className="text-sm font-medium text-muted-foreground">Exemplos de serviços:</p>
-                                <div className="flex flex-wrap gap-2">
-                                  {type.examples.map((example, index) => (
-                                    <Badge key={index} variant="secondary" className="rounded-lg text-xs">
-                                      {example}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
                               
                             </CardContent>
                           </Card>
