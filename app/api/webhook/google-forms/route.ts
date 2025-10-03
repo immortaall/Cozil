@@ -40,10 +40,31 @@ export async function POST(request: NextRequest) {
     console.log('Dados mapeados:', JSON.stringify(maintenanceData, null, 2))
 
     // Validar dados obrigatórios
+    console.log('Validando dados obrigatórios...')
+    console.log('Solicitante:', maintenanceData.solicitante, 'Válido:', !!maintenanceData.solicitante)
+    console.log('Setor:', maintenanceData.setor, 'Válido:', !!maintenanceData.setor)
+    console.log('Descrição:', maintenanceData.descricao, 'Válido:', !!maintenanceData.descricao)
+    
     if (!maintenanceData.solicitante || !maintenanceData.setor || !maintenanceData.descricao) {
+      console.log('❌ DADOS OBRIGATÓRIOS FALTANDO!')
       return NextResponse.json(
-        { error: 'Dados obrigatórios não fornecidos' },
-        { status: 400 }
+        { 
+          error: 'Dados obrigatórios não fornecidos',
+          details: {
+            solicitante: maintenanceData.solicitante,
+            setor: maintenanceData.setor,
+            descricao: maintenanceData.descricao
+          }
+        },
+        { 
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+            'Access-Control-Max-Age': '86400',
+          }
+        }
       )
     }
 
