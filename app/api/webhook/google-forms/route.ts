@@ -69,10 +69,12 @@ export async function POST(request: NextRequest) {
       id: result.id,
       message: 'Solicitação salva com sucesso' 
     }, {
+      status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+        'Access-Control-Max-Age': '86400',
       }
     })
 
@@ -80,7 +82,15 @@ export async function POST(request: NextRequest) {
     console.error('Erro ao processar webhook do Google Forms:', error)
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+          'Access-Control-Max-Age': '86400',
+        }
+      }
     )
   }
 }
@@ -115,12 +125,14 @@ function mapMaintenanceType(type: string): 'predial' | 'mecanica' {
 
 // Método OPTIONS para CORS
 export async function OPTIONS(request: NextRequest) {
+  console.log('=== OPTIONS REQUEST ===')
   return new NextResponse(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+      'Access-Control-Max-Age': '86400',
     }
   })
 }
