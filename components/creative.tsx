@@ -607,16 +607,16 @@ export function DesignaliCreative() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: 0.1 }}
                     >
-                      <Card className="rounded-3xl border-2 hover:border-yellow-200 transition-all duration-300 hover:shadow-lg">
+                      <Card className="rounded-3xl border-0 bg-gradient-to-br from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 transition-all duration-300 hover:shadow-xl hover:scale-105">
                         <CardContent className="p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1 flex-1 min-w-0">
-                              <p className="text-sm font-medium text-muted-foreground">OS Pendentes</p>
-                              <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{stats.pendentes}</p>
-                              <p className="text-xs text-muted-foreground hidden sm:block">Aguardando execução</p>
+                              <p className="text-sm font-medium text-amber-700">OS Pendentes</p>
+                              <p className="text-2xl sm:text-3xl font-bold text-amber-800">{stats.pendentes}</p>
+                              <p className="text-xs text-amber-600 hidden sm:block">Aguardando execução</p>
                           </div>
-                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-yellow-100 to-yellow-200 flex-shrink-0">
-                              <Clock className="h-6 w-6 sm:h-7 sm:w-7 text-yellow-600" />
+                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-200 to-orange-200 flex-shrink-0 shadow-lg">
+                              <Clock className="h-6 w-6 sm:h-7 sm:w-7 text-amber-700" />
                           </div>
                         </div>
                       </CardContent>
@@ -628,16 +628,16 @@ export function DesignaliCreative() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: 0.2 }}
                     >
-                      <Card className="rounded-3xl border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-lg">
+                      <Card className="rounded-3xl border-0 bg-gradient-to-br from-slate-50 to-gray-50 hover:from-slate-100 hover:to-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105">
                         <CardContent className="p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1 flex-1 min-w-0">
-                              <p className="text-sm font-medium text-muted-foreground">Todos OS</p>
-                              <p className="text-2xl sm:text-3xl font-bold text-blue-600">{maintenanceRequests.length}</p>
-                              <p className="text-xs text-muted-foreground hidden sm:block">Total de ordens</p>
+                              <p className="text-sm font-medium text-slate-700">Todos OS</p>
+                              <p className="text-2xl sm:text-3xl font-bold text-slate-800">{maintenanceRequests.length}</p>
+                              <p className="text-xs text-slate-600 hidden sm:block">Total de ordens</p>
                           </div>
-                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 flex-shrink-0">
-                              <PlayCircle className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600" />
+                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-200 to-gray-200 flex-shrink-0 shadow-lg">
+                              <PlayCircle className="h-6 w-6 sm:h-7 sm:w-7 text-slate-700" />
                           </div>
                         </div>
                       </CardContent>
@@ -649,16 +649,16 @@ export function DesignaliCreative() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: 0.3 }}
                     >
-                      <Card className="rounded-3xl border-2 hover:border-green-200 transition-all duration-300 hover:shadow-lg">
+                      <Card className="rounded-3xl border-0 bg-gradient-to-br from-emerald-50 to-green-50 hover:from-emerald-100 hover:to-green-100 transition-all duration-300 hover:shadow-xl hover:scale-105">
                         <CardContent className="p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1 flex-1 min-w-0">
-                              <p className="text-sm font-medium text-muted-foreground">Concluídas</p>
-                              <p className="text-2xl sm:text-3xl font-bold text-green-600">{stats.concluidas}</p>
-                              <p className="text-xs text-muted-foreground hidden sm:block">Finalizadas</p>
+                              <p className="text-sm font-medium text-emerald-700">Concluídas</p>
+                              <p className="text-2xl sm:text-3xl font-bold text-emerald-800">{stats.concluidas}</p>
+                              <p className="text-xs text-emerald-600 hidden sm:block">Finalizadas</p>
                           </div>
-                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-100 to-green-200 flex-shrink-0">
-                              <CheckCircle className="h-6 w-6 sm:h-7 sm:w-7 text-green-600" />
+                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-200 to-green-200 flex-shrink-0 shadow-lg">
+                              <CheckCircle className="h-6 w-6 sm:h-7 sm:w-7 text-emerald-700" />
                           </div>
                         </div>
                       </CardContent>
@@ -670,16 +670,16 @@ export function DesignaliCreative() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: 0.4 }}
                     >
-                      <Card className="rounded-3xl border-2 hover:border-red-200 transition-all duration-300 hover:shadow-lg">
+                      <Card className="rounded-3xl border-0 bg-gradient-to-br from-rose-50 to-pink-50 hover:from-rose-100 hover:to-pink-100 transition-all duration-300 hover:shadow-xl hover:scale-105">
                         <CardContent className="p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1 flex-1 min-w-0">
-                              <p className="text-sm font-medium text-muted-foreground">Prioridade Alta</p>
-                              <p className="text-2xl sm:text-3xl font-bold text-red-600">{stats.prioridade_alta}</p>
-                              <p className="text-xs text-muted-foreground hidden sm:block">Requer atenção</p>
+                              <p className="text-sm font-medium text-rose-700">Prioridade Alta</p>
+                              <p className="text-2xl sm:text-3xl font-bold text-rose-800">{stats.prioridade_alta}</p>
+                              <p className="text-xs text-rose-600 hidden sm:block">Requer atenção</p>
                           </div>
-                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-100 to-red-200 flex-shrink-0">
-                              <AlertTriangle className="h-6 w-6 sm:h-7 sm:w-7 text-red-600" />
+                            <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-200 to-pink-200 flex-shrink-0 shadow-lg">
+                              <AlertTriangle className="h-6 w-6 sm:h-7 sm:w-7 text-rose-700" />
                           </div>
                         </div>
                       </CardContent>
