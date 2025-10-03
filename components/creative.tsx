@@ -1282,11 +1282,11 @@ export function DesignaliCreative() {
                 </div>
 
                 {/* Fotos */}
-                {selectedOS.fotos_url && selectedOS.fotos_url.length > 0 && (
+                {selectedOS.fotos && selectedOS.fotos.length > 0 && (
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">Fotos Anexadas</label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                      {selectedOS.fotos_url.map((foto, index) => (
+                      {selectedOS.fotos.map((foto, index) => (
                         <div key={index} className="aspect-square rounded-2xl overflow-hidden bg-muted">
                           <img 
                             src={foto} 
