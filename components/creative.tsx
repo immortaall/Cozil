@@ -1176,12 +1176,12 @@ export function DesignaliCreative() {
       {/* Modal de Detalhes da OS */}
       {showOSModal && selectedOS && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0">
-            <div className="p-4 sm:p-6">
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[80vh] sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0">
+            <div className="p-3 sm:p-6">
               {/* Header */}
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center justify-between mb-3 sm:mb-6">
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold">Detalhes da OS</h2>
+                  <h2 className="text-lg sm:text-2xl font-bold">Detalhes da OS</h2>
                   <p className="text-sm sm:text-base text-muted-foreground">Ordem de Serviço #{selectedOS.id?.slice(-8)}</p>
                 </div>
                 <Button 
@@ -1195,7 +1195,7 @@ export function DesignaliCreative() {
               </div>
 
               {/* Conteúdo */}
-              <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-3 sm:space-y-6">
                 {/* Informações Básicas */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
