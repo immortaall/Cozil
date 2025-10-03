@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Simples - Webhook</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        #result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 6px; white-space: pre-wrap; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste Simples do Webhook</h1>
+    <button onclick="testWebhook()">Testar Webhook</button>
+    <div id="result"></div>
+
+    <script>
+        async function testWebhook() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Testando webhook...';
+            
+            try {
+                console.log('Iniciando teste...');
+                
+                const response = await fetch('https://cozil-y3i2.vercel.app/api/webhook/google-forms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "Solicitante": "Teste Simples",
+                        "Setor": "TI",
+                        "Data da solicitação": "2025-01-27",
+                        "Local/Equipamento": "Servidor Teste",
+                        "Prioridade": "Alta",
+                        "Tipo de Manutenção": "Mecânica",
+                        "Descreva o serviço...": "Teste simples do webhook.",
+                        "Upload de Foto do Problema": []
+                    }),
+                });
+                
+                console.log('Resposta recebida:', response);
+                console.log('Status:', response.status);
+                console.log('Headers:', response.headers);
+                
+                const data = await response.json();
+                console.log('Dados:', data);
+                
+                if (response.ok) {
+                    resultDiv.textContent = `✅ SUCESSO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'success';
+                } else {
+                    resultDiv.textContent = `❌ ERRO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'error';
+                }
+                
+            } catch (error) {
+                console.error('Erro completo:', error);
+                resultDiv.textContent = `❌ ERRO DE CONEXÃO!\n\nErro: ${error.message}\nTipo: ${error.name}\nStack: ${error.stack}`;
+                resultDiv.className = 'error';
+            }
+        }
+    </script>
+</body>
+</html>

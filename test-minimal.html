@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Mínimo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        #result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 6px; white-space: pre-wrap; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste Mínimo do Webhook</h1>
+    <button onclick="testMinimal()">Testar Dados Mínimos</button>
+    <div id="result"></div>
+
+    <script>
+        async function testMinimal() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Testando dados mínimos...';
+            
+            try {
+                // Dados mínimos obrigatórios
+                const minimalData = {
+                    "Solicitante": "Teste Mínimo",
+                    "Setor": "TI",
+                    "Descreva o serviço...": "Teste com dados mínimos obrigatórios"
+                };
+                
+                console.log('Enviando dados mínimos:', minimalData);
+                
+                const response = await fetch('https://cozil-y3i2.vercel.app/api/webhook/google-forms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(minimalData),
+                });
+                
+                console.log('Resposta:', response.status);
+                
+                const data = await response.json();
+                console.log('Dados da resposta:', data);
+                
+                if (response.ok) {
+                    resultDiv.textContent = `✅ SUCESSO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'success';
+                } else {
+                    resultDiv.textContent = `❌ ERRO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'error';
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                resultDiv.textContent = `❌ ERRO DE CONEXÃO!\n\n${error.message}`;
+                resultDiv.className = 'error';
+            }
+        }
+    </script>
+</body>
+</html>

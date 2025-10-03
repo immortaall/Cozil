@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Webhook - Servidor Local</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste Webhook - Servidor Local</h1>
+        <p>Este teste usa um servidor local para evitar problemas de CORS.</p>
+        
+        <div>
+            <button onclick="testWebhook()">🚀 Testar Webhook</button>
+            <button onclick="testWithImage()">📸 Testar com Imagem</button>
+            <button onclick="checkStatus()">🔍 Verificar Status</button>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const webhookUrl = 'https://cozil-y3i2.vercel.app/api/webhook/google-forms';
+        
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = type;
+        }
+        
+        async function testWebhook() {
+            showResult('🚀 Testando webhook...', 'info');
+            
+            try {
+                console.log('Iniciando teste do webhook...');
+                
+                const testData = {
+                    "Solicitante": "Teste Servidor Local",
+                    "Setor": "TI",
+                    "Data da solicitação": "2025-01-27",
+                    "Local/Equipamento": "Servidor Teste",
+                    "Prioridade": "Alta",
+                    "Tipo de Manutenção": "Mecânica",
+                    "Descreva o serviço...": "Teste via servidor local para evitar CORS.",
+                    "Upload de Foto do Problema": []
+                };
+                
+                console.log('Dados enviados:', testData);
+                
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData),
+                });
+                
+                console.log('Resposta recebida:', response);
+                console.log('Status:', response.status);
+                console.log('Headers:', Object.fromEntries(response.headers.entries()));
+                
+                const data = await response.json();
+                console.log('Dados da resposta:', data);
+                
+                if (response.ok) {
+                    showResult(`✅ SUCESSO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}\n\n🎉 Webhook funcionando perfeitamente!`, 'success');
+                } else {
+                    showResult(`❌ ERRO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}\n\n🔍 Verifique os logs do servidor para mais detalhes.`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro completo:', error);
+                showResult(`❌ ERRO DE CONEXÃO!\n\nErro: ${error.message}\nTipo: ${error.name}\n\n🔧 Possíveis causas:\n- Problema de CORS\n- Webhook offline\n- Problema de rede`, 'error');
+            }
+        }
+        
+        async function testWithImage() {
+            showResult('📸 Testando com imagem...', 'info');
+            
+            try {
+                const testData = {
+                    "Solicitante": "Teste com Imagem",
+                    "Setor": "Manutenção",
+                    "Data da solicitação": "2025-01-27",
+                    "Local/Equipamento": "Equipamento Teste",
+                    "Prioridade": "Média",
+                    "Tipo de Manutenção": "Predial",
+                    "Descreva o serviço...": "Teste com imagem anexada via servidor local.",
+                    "Upload de Foto do Problema": [
+                        "https://via.placeholder.com/300x200/007bff/ffffff?text=Imagem+Teste+1",
+                        "https://via.placeholder.com/300x200/28a745/ffffff?text=Imagem+Teste+2"
+                    ]
+                };
+                
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ SUCESSO COM IMAGEM!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}\n\n📸 Imagens processadas com sucesso!`, 'success');
+                } else {
+                    showResult(`❌ ERRO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`❌ ERRO DE CONEXÃO!\n\n${error.message}`, 'error');
+            }
+        }
+        
+        async function checkStatus() {
+            showResult('🔍 Verificando status do webhook...', 'info');
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'OPTIONS',
+                });
+                
+                if (response.ok) {
+                    showResult(`✅ WEBHOOK ACESSÍVEL!\n\nStatus: ${response.status}\n\n🌐 O webhook está funcionando e aceita requisições.\n\n📡 Pronto para receber dados do Google Forms!`, 'success');
+                } else {
+                    showResult(`❌ WEBHOOK COM PROBLEMA!\n\nStatus: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ WEBHOOK INACESSÍVEL!\n\n${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

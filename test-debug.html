@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Webhook</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        #result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 6px; white-space: pre-wrap; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug do Webhook</h1>
+    <button onclick="testConnection()">🔗 Testar Conexão</button>
+    <button onclick="testOptions()">⚙️ Testar OPTIONS</button>
+    <button onclick="testPost()">📤 Testar POST</button>
+    <div id="result"></div>
+
+    <script>
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = type;
+        }
+        
+        async function testConnection() {
+            showResult('🔗 Testando conexão básica...', 'info');
+            
+            try {
+                // Teste simples de conectividade
+                const response = await fetch('https://cozil-y3i2.vercel.app/', {
+                    method: 'GET',
+                });
+                
+                if (response.ok) {
+                    showResult(`✅ CONEXÃO OK!\n\nStatus: ${response.status}\nSite principal acessível.`, 'success');
+                } else {
+                    showResult(`❌ PROBLEMA DE CONEXÃO!\n\nStatus: ${response.status}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`❌ ERRO DE CONEXÃO!\n\n${error.message}\n\nPossível problema de rede ou DNS.`, 'error');
+            }
+        }
+        
+        async function testOptions() {
+            showResult('⚙️ Testando método OPTIONS...', 'info');
+            
+            try {
+                const response = await fetch('https://cozil-y3i2.vercel.app/api/webhook/google-forms', {
+                    method: 'OPTIONS',
+                });
+                
+                console.log('OPTIONS Response:', response);
+                console.log('OPTIONS Headers:', Object.fromEntries(response.headers.entries()));
+                
+                if (response.ok) {
+                    showResult(`✅ OPTIONS OK!\n\nStatus: ${response.status}\nWebhook aceita requisições OPTIONS.`, 'success');
+                } else {
+                    showResult(`❌ OPTIONS FALHOU!\n\nStatus: ${response.status}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`❌ ERRO NO OPTIONS!\n\n${error.message}`, 'error');
+            }
+        }
+        
+        async function testPost() {
+            showResult('📤 Testando método POST...', 'info');
+            
+            try {
+                const testData = {
+                    "Solicitante": "Debug Test",
+                    "Setor": "TI",
+                    "Descreva o serviço...": "Teste de debug"
+                };
+                
+                console.log('Enviando dados:', testData);
+                
+                const response = await fetch('https://cozil-y3i2.vercel.app/api/webhook/google-forms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData),
+                });
+                
+                console.log('POST Response:', response);
+                console.log('POST Status:', response.status);
+                console.log('POST Headers:', Object.fromEntries(response.headers.entries()));
+                
+                const data = await response.json();
+                console.log('POST Data:', data);
+                
+                if (response.ok) {
+                    showResult(`✅ POST OK!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`❌ POST FALHOU!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro completo:', error);
+                showResult(`❌ ERRO NO POST!\n\n${error.message}\n\nTipo: ${error.name}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

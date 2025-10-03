@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Google Forms</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        #result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 6px; white-space: pre-wrap; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+        .warning { background: #fff3cd; border-color: #ffeaa7; }
+    </style>
+</head>
+<body>
+    <h1>📋 Teste Google Forms</h1>
+    <p><strong>Formulário:</strong> <a href="https://forms.gle/V7wWdXStToKDx2E69" target="_blank">https://forms.gle/V7wWdXStToKDx2E69</a></p>
+    
+    <button onclick="testWebhook()">🧪 Testar Webhook</button>
+    <button onclick="simulateGoogleForms()">📝 Simular Google Forms</button>
+    <button onclick="checkFormConfig()">⚙️ Verificar Configuração</button>
+    
+    <div id="result"></div>
+
+    <script>
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = type;
+        }
+        
+        async function testWebhook() {
+            showResult('🧪 Testando webhook diretamente...', 'info');
+            
+            try {
+                const response = await fetch('https://cozil-y3i2.vercel.app/api/webhook/google-forms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "Solicitante": "Teste Manual",
+                        "Setor": "TI",
+                        "Data da solicitação": "2025-01-27",
+                        "Local/Equipamento": "Servidor Teste",
+                        "Prioridade": "Alta",
+                        "Tipo de Manutenção": "Mecânica",
+                        "Descreva o serviço...": "Teste manual do webhook",
+                        "Upload de Foto do Problema": []
+                    }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ WEBHOOK FUNCIONANDO!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`❌ WEBHOOK COM PROBLEMA!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`❌ ERRO DE CONEXÃO!\n\n${error.message}`, 'error');
+            }
+        }
+        
+        async function simulateGoogleForms() {
+            showResult('📝 Simulando dados do Google Forms...', 'info');
+            
+            try {
+                // Simular exatamente como o Google Forms envia os dados
+                const googleFormsData = {
+                    "Solicitante": "João Silva",
+                    "Setor": "Portaria",
+                    "Data da solicitação": "2025-01-27",
+                    "Local/Equipamento": "Portão Principal",
+                    "Prioridade": "Alta",
+                    "Tipo de Manutenção": "Predial",
+                    "Descreva o serviço...": "Problema na fechadura do portão principal. A fechadura não está funcionando corretamente e precisa de manutenção urgente.",
+                    "Upload de Foto do Problema": [
+                        "https://example.com/foto1.jpg",
+                        "https://example.com/foto2.jpg"
+                    ]
+                };
+                
+                console.log('Simulando dados do Google Forms:', googleFormsData);
+                
+                const response = await fetch('https://cozil-y3i2.vercel.app/api/webhook/google-forms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(googleFormsData),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ SIMULAÇÃO FUNCIONOU!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}\n\n🎉 Webhook está funcionando!`, 'success');
+                } else {
+                    showResult(`❌ SIMULAÇÃO FALHOU!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`❌ ERRO NA SIMULAÇÃO!\n\n${error.message}`, 'error');
+            }
+        }
+        
+        function checkFormConfig() {
+            showResult(`⚙️ VERIFICAÇÃO DA CONFIGURAÇÃO DO GOOGLE FORMS
+
+📋 FORMULÁRIO: https://forms.gle/V7wWdXStToKDx2E69
+
+🔧 CONFIGURAÇÃO NECESSÁRIA:
+
+1. 📝 GOOGLE APPS SCRIPT:
+   - Acesse: https://script.google.com/
+   - Crie um novo projeto
+   - Cole o código do webhook
+   - Configure o trigger para o formulário
+
+2. 🔗 URL DO WEBHOOK:
+   https://cozil-y3i2.vercel.app/api/webhook/google-forms
+
+3. 📤 CAMPOS DO FORMULÁRIO:
+   ✅ Solicitante
+   ✅ Setor  
+   ✅ Data da solicitação
+   ✅ Local/Equipamento
+   ✅ Prioridade
+   ✅ Tipo de Manutenção
+   ✅ Descreva o serviço...
+   ✅ Upload de Foto do Problema
+
+4. 🧪 TESTE:
+   - Preencha o formulário
+   - Envie os dados
+   - Verifique se aparece no site
+
+❓ PROBLEMA POSSÍVEL:
+O Google Forms pode não estar configurado para enviar dados para o webhook.
+
+🔧 SOLUÇÃO:
+Configure o Google Apps Script para enviar os dados automaticamente.`, 'warning');
+        }
+    </script>
+</body>
+</html>
