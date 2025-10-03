@@ -4,91 +4,12 @@ import { supabase } from '@/lib/supabase'
 export async function POST(request: NextRequest) {
   try {
     console.log('=== WEBHOOK CHAMADO ===')
-    console.log('Headers:', Object.fromEntries(request.headers.entries()))
     
-    const body = await request.json()
-    
-    // Log para debug
-    console.log('Webhook recebido:', JSON.stringify(body, null, 2))
-    console.log('Tipo do body:', typeof body)
-    console.log('Keys do body:', Object.keys(body))
-    
-    // Mapear os dados do Google Forms para nosso formato
-    console.log('Processando dados...')
-    console.log('Solicitante:', body['Solicitante'])
-    console.log('Setor:', body['Setor'])
-    console.log('Prioridade:', body['Prioridade'])
-    console.log('Tipo de Manutenção:', body['Tipo de Manutenção'])
-    console.log('Upload de Foto:', body['Upload de Foto do Problema'])
-    
-    const maintenanceData = {
-      solicitante: body['Solicitante'] || '',
-      setor: body['Setor'] || '',
-      data_solicitacao: body['Data da solicitação'] || new Date().toISOString().split('T')[0],
-      local_equipamento: body['Local/Equipamento'] || '',
-      prioridade: mapPriority(body['Prioridade']),
-      tipo_manutencao: mapMaintenanceType(body['Tipo de Manutenção']),
-      descricao: body['Descreva o serviço...'] || '',
-      fotos_url: body['Upload de Foto do Problema'] ? 
-        (Array.isArray(body['Upload de Foto do Problema']) 
-          ? body['Upload de Foto do Problema'] 
-          : [body['Upload de Foto do Problema']]) 
-        : [],
-      status: 'pendente' as const
-    }
-    
-    console.log('Dados mapeados:', JSON.stringify(maintenanceData, null, 2))
-
-    // Validar dados obrigatórios
-    console.log('Validando dados obrigatórios...')
-    console.log('Solicitante:', maintenanceData.solicitante, 'Válido:', !!maintenanceData.solicitante)
-    console.log('Setor:', maintenanceData.setor, 'Válido:', !!maintenanceData.setor)
-    console.log('Descrição:', maintenanceData.descricao, 'Válido:', !!maintenanceData.descricao)
-    
-    if (!maintenanceData.solicitante || !maintenanceData.setor || !maintenanceData.descricao) {
-      console.log('❌ DADOS OBRIGATÓRIOS FALTANDO!')
-      return NextResponse.json(
-        { 
-          error: 'Dados obrigatórios não fornecidos',
-          details: {
-            solicitante: maintenanceData.solicitante,
-            setor: maintenanceData.setor,
-            descricao: maintenanceData.descricao
-          }
-        },
-        { 
-          status: 400,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-            'Access-Control-Max-Age': '86400',
-          }
-        }
-      )
-    }
-
-    // Inserir no banco de dados
-    const { data: result, error } = await supabase
-      .from('maintenance_requests')
-      .insert([maintenanceData])
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Erro ao inserir no Supabase:', error)
-      return NextResponse.json(
-        { error: 'Erro ao salvar no banco de dados' },
-        { status: 500 }
-      )
-    }
-
-    console.log('Nova solicitação recebida do Google Forms:', result)
-
+    // Teste simples primeiro
     return NextResponse.json({ 
       success: true, 
-      id: result.id,
-      message: 'Solicitação salva com sucesso' 
+      message: 'Webhook funcionando!',
+      timestamp: new Date().toISOString()
     }, {
       status: 200,
       headers: {
@@ -98,6 +19,19 @@ export async function POST(request: NextRequest) {
         'Access-Control-Max-Age': '86400',
       }
     })
+    
+    // Código original comentado temporariamente
+    /*
+    console.log('Headers:', Object.fromEntries(request.headers.entries()))
+    
+    const body = await request.json()
+    
+    // Log para debug
+    console.log('Webhook recebido:', JSON.stringify(body, null, 2))
+    console.log('Tipo do body:', typeof body)
+    console.log('Keys do body:', Object.keys(body))
+    
+    */
 
   } catch (error) {
     console.error('Erro ao processar webhook do Google Forms:', error)
