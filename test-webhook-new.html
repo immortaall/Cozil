@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Webhook - Cozil</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste do Webhook - Cozil</h1>
+        <p>Este teste verifica se o webhook está funcionando corretamente.</p>
+        
+        <div class="test-section">
+            <h3>📤 Teste 1: Dados Simples</h3>
+            <button onclick="testSimpleData()">Enviar Dados Simples</button>
+            <p>Envia dados básicos sem imagem.</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>📸 Teste 2: Com Imagem</h3>
+            <button onclick="testWithImage()">Enviar com Imagem</button>
+            <p>Envia dados com URL de imagem simulada.</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 Teste 3: Verificar Webhook</h3>
+            <button onclick="checkWebhookStatus()">Verificar Status</button>
+            <p>Verifica se o webhook está acessível.</p>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const webhookUrl = 'https://cozil-y3i2.vercel.app/api/webhook/google-forms';
+        
+        function showResult(message, isError = false) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = isError ? 'error' : 'success';
+        }
+        
+        async function testSimpleData() {
+            showResult('Enviando dados simples...');
+            
+            const testData = {
+                "Solicitante": "Teste Webhook",
+                "Setor": "TI",
+                "Data da solicitação": "2025-01-27",
+                "Local/Equipamento": "Servidor Teste",
+                "Prioridade": "Alta",
+                "Tipo de Manutenção": "Mecânica",
+                "Descreva o serviço...": "Teste do webhook para verificar funcionamento.",
+                "Upload de Foto do Problema": []
+            };
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ SUCESSO!\n\nResposta: ${JSON.stringify(data, null, 2)}\n\nStatus: ${response.status}`);
+                } else {
+                    showResult(`❌ ERRO!\n\nResposta: ${JSON.stringify(data, null, 2)}\n\nStatus: ${response.status}`, true);
+                }
+            } catch (error) {
+                showResult(`❌ ERRO DE CONEXÃO!\n\n${error.message}`, true);
+            }
+        }
+        
+        async function testWithImage() {
+            showResult('Enviando dados com imagem...');
+            
+            const testData = {
+                "Solicitante": "Teste com Imagem",
+                "Setor": "Manutenção",
+                "Data da solicitação": "2025-01-27",
+                "Local/Equipamento": "Equipamento Teste",
+                "Prioridade": "Média",
+                "Tipo de Manutenção": "Predial",
+                "Descreva o serviço...": "Teste com imagem anexada.",
+                "Upload de Foto do Problema": [
+                    "https://via.placeholder.com/300x200/007bff/ffffff?text=Imagem+Teste",
+                    "https://via.placeholder.com/300x200/28a745/ffffff?text=Segunda+Imagem"
+                ]
+            };
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ SUCESSO COM IMAGEM!\n\nResposta: ${JSON.stringify(data, null, 2)}\n\nStatus: ${response.status}`);
+                } else {
+                    showResult(`❌ ERRO!\n\nResposta: ${JSON.stringify(data, null, 2)}\n\nStatus: ${response.status}`, true);
+                }
+            } catch (error) {
+                showResult(`❌ ERRO DE CONEXÃO!\n\n${error.message}`, true);
+            }
+        }
+        
+        async function checkWebhookStatus() {
+            showResult('Verificando status do webhook...');
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'OPTIONS',
+                });
+                
+                if (response.ok) {
+                    showResult(`✅ WEBHOOK ACESSÍVEL!\n\nStatus: ${response.status}\n\nO webhook está funcionando e aceita requisições.`);
+                } else {
+                    showResult(`❌ WEBHOOK COM PROBLEMA!\n\nStatus: ${response.status}`, true);
+                }
+            } catch (error) {
+                showResult(`❌ WEBHOOK INACESSÍVEL!\n\n${error.message}`, true);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -3,12 +3,24 @@ import { supabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('=== WEBHOOK CHAMADO ===')
+    console.log('Headers:', Object.fromEntries(request.headers.entries()))
+    
     const body = await request.json()
     
     // Log para debug
     console.log('Webhook recebido:', JSON.stringify(body, null, 2))
+    console.log('Tipo do body:', typeof body)
+    console.log('Keys do body:', Object.keys(body))
     
     // Mapear os dados do Google Forms para nosso formato
+    console.log('Processando dados...')
+    console.log('Solicitante:', body['Solicitante'])
+    console.log('Setor:', body['Setor'])
+    console.log('Prioridade:', body['Prioridade'])
+    console.log('Tipo de Manutenção:', body['Tipo de Manutenção'])
+    console.log('Upload de Foto:', body['Upload de Foto do Problema'])
+    
     const maintenanceData = {
       solicitante: body['Solicitante'] || '',
       setor: body['Setor'] || '',
@@ -24,6 +36,8 @@ export async function POST(request: NextRequest) {
         : [],
       status: 'pendente' as const
     }
+    
+    console.log('Dados mapeados:', JSON.stringify(maintenanceData, null, 2))
 
     // Validar dados obrigatórios
     if (!maintenanceData.solicitante || !maintenanceData.setor || !maintenanceData.descricao) {
