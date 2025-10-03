@@ -28,9 +28,39 @@ export async function POST(request: NextRequest) {
     
     console.log('Dados mapeados:', JSON.stringify(maintenanceData, null, 2))
     
+    // Inserir no banco de dados
+    console.log('Inserindo no Supabase...')
+    const { data: result, error } = await supabase
+      .from('maintenance_requests')
+      .insert([maintenanceData])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Erro ao inserir no Supabase:', error)
+      return NextResponse.json(
+        { 
+          error: 'Erro ao salvar no banco de dados',
+          details: error.message 
+        },
+        { 
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+            'Access-Control-Max-Age': '86400',
+          }
+        }
+      )
+    }
+
+    console.log('Nova solicitação salva no Supabase:', result)
+    
     return NextResponse.json({ 
       success: true, 
-      message: 'Webhook funcionando com dados!',
+      message: 'Solicitação salva com sucesso!',
+      id: result.id,
       received: maintenanceData,
       timestamp: new Date().toISOString()
     }, {
