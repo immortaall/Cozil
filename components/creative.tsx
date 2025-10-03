@@ -115,6 +115,12 @@ export function DesignaliCreative() {
   const [showFilters, setShowFilters] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editStatus, setEditStatus] = useState('')
+  
+  // Estados para relatórios
+  const [reportsLoading, setReportsLoading] = useState(false)
+  const [monthlyReport, setMonthlyReport] = useState<any>(null)
+  const [sectorReport, setSectorReport] = useState<any>(null)
+  const [executionReport, setExecutionReport] = useState<any>(null)
 
   const handleSidebarClick = (key: string) => {
     setActiveTab(key)
@@ -289,6 +295,72 @@ export function DesignaliCreative() {
     } catch {
       return 'N/A'
     }
+  }
+
+  // Funções para relatórios
+  const generateMonthlyReport = () => {
+    setReportsLoading(true)
+    setTimeout(() => {
+      const report = {
+        totalOS: maintenanceRequests.length,
+        predial: maintenanceRequests.filter(r => r.tipo_manutencao === 'predial').length,
+        mecanica: maintenanceRequests.filter(r => r.tipo_manutencao === 'mecanica').length,
+        concluidas: maintenanceRequests.filter(r => r.status === 'concluida').length,
+        pendentes: maintenanceRequests.filter(r => r.status === 'pendente').length,
+        emExecucao: maintenanceRequests.filter(r => r.status === 'em_execucao').length
+      }
+      setMonthlyReport(report)
+      setReportsLoading(false)
+    }, 1000)
+  }
+
+  const generateSectorReport = () => {
+    setReportsLoading(true)
+    setTimeout(() => {
+      const sectors = [...new Set(maintenanceRequests.map(r => r.setor))]
+      const report = sectors.map(sector => {
+        const sectorOS = maintenanceRequests.filter(r => r.setor === sector)
+        return {
+          setor: sector,
+          total: sectorOS.length,
+          concluidas: sectorOS.filter(r => r.status === 'concluida').length,
+          pendentes: sectorOS.filter(r => r.status === 'pendente').length,
+          emExecucao: sectorOS.filter(r => r.status === 'em_execucao').length
+        }
+      })
+      setSectorReport(report)
+      setReportsLoading(false)
+    }, 1000)
+  }
+
+  const generateExecutionReport = () => {
+    setReportsLoading(true)
+    setTimeout(() => {
+      const concluidas = maintenanceRequests.filter(r => r.status === 'concluida')
+      const report = {
+        totalConcluidas: concluidas.length,
+        tempoMedio: concluidas.length > 0 ? 
+          Math.round(concluidas.reduce((sum, r) => {
+            const created = new Date(r.created_at)
+            const updated = new Date(r.updated_at || r.created_at)
+            return sum + (updated.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
+          }, 0) / concluidas.length) : 0,
+        maisRapido: concluidas.length > 0 ? 
+          Math.min(...concluidas.map(r => {
+            const created = new Date(r.created_at)
+            const updated = new Date(r.updated_at || r.created_at)
+            return (updated.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
+          })) : 0,
+        maisLento: concluidas.length > 0 ? 
+          Math.max(...concluidas.map(r => {
+            const created = new Date(r.created_at)
+            const updated = new Date(r.updated_at || r.created_at)
+            return (updated.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
+          })) : 0
+      }
+      setExecutionReport(report)
+      setReportsLoading(false)
+    }, 1000)
   }
 
   // Carregar dados iniciais
@@ -1062,10 +1134,46 @@ export function DesignaliCreative() {
                         <CardDescription>OS por mês e tipo de manutenção</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <Button className="w-full rounded-2xl">
-                          <Download className="mr-2 h-4 w-4" />
+                        <Button 
+                          className="w-full rounded-2xl"
+                          onClick={generateMonthlyReport}
+                          disabled={reportsLoading}
+                        >
+                          {reportsLoading ? (
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Download className="mr-2 h-4 w-4" />
+                          )}
                           Gerar Relatório
                         </Button>
+                        {monthlyReport && (
+                          <div className="mt-4 space-y-3">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="bg-blue-50 p-3 rounded-xl">
+                                <p className="text-sm text-blue-600 font-medium">Predial</p>
+                                <p className="text-2xl font-bold text-blue-800">{monthlyReport.predial}</p>
+                              </div>
+                              <div className="bg-green-50 p-3 rounded-xl">
+                                <p className="text-sm text-green-600 font-medium">Mecânica</p>
+                                <p className="text-2xl font-bold text-green-800">{monthlyReport.mecanica}</p>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2 text-sm">
+                              <div className="bg-gray-50 p-2 rounded-lg text-center">
+                                <p className="font-bold text-lg">{monthlyReport.totalOS}</p>
+                                <p className="text-gray-600">Total</p>
+                              </div>
+                              <div className="bg-green-50 p-2 rounded-lg text-center">
+                                <p className="font-bold text-lg text-green-600">{monthlyReport.concluidas}</p>
+                                <p className="text-gray-600">Concluídas</p>
+                              </div>
+                              <div className="bg-yellow-50 p-2 rounded-lg text-center">
+                                <p className="font-bold text-lg text-yellow-600">{monthlyReport.pendentes}</p>
+                                <p className="text-gray-600">Pendentes</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
 
@@ -1078,10 +1186,46 @@ export function DesignaliCreative() {
                         <CardDescription>Performance por setor</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <Button className="w-full rounded-2xl">
-                          <Download className="mr-2 h-4 w-4" />
+                        <Button 
+                          className="w-full rounded-2xl"
+                          onClick={generateSectorReport}
+                          disabled={reportsLoading}
+                        >
+                          {reportsLoading ? (
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Download className="mr-2 h-4 w-4" />
+                          )}
                           Gerar Relatório
                         </Button>
+                        {sectorReport && (
+                          <div className="mt-4 space-y-3">
+                            <div className="space-y-2">
+                              {sectorReport.map((sector: any, index: number) => (
+                                <div key={sector.setor} className="p-3 bg-gray-50 rounded-lg">
+                                  <div className="flex justify-between items-center mb-2">
+                                    <span className="font-medium">{sector.setor}</span>
+                                    <span className="text-lg font-bold">{sector.total} OS</span>
+                                  </div>
+                                  <div className="grid grid-cols-3 gap-2 text-sm">
+                                    <div className="flex items-center gap-1">
+                                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                      <span>{sector.concluidas} Concluídas</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                      <span>{sector.emExecucao} Em Execução</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                      <span>{sector.pendentes} Pendentes</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
 
@@ -1094,10 +1238,42 @@ export function DesignaliCreative() {
                         <CardDescription>Análise de tempo médio</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <Button className="w-full rounded-2xl">
-                          <Download className="mr-2 h-4 w-4" />
+                        <Button 
+                          className="w-full rounded-2xl"
+                          onClick={generateExecutionReport}
+                          disabled={reportsLoading}
+                        >
+                          {reportsLoading ? (
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Download className="mr-2 h-4 w-4" />
+                          )}
                           Gerar Relatório
                         </Button>
+                        {executionReport && (
+                          <div className="mt-4 space-y-3">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="bg-blue-50 p-3 rounded-xl text-center">
+                                <p className="text-sm text-blue-600 font-medium">Tempo Médio</p>
+                                <p className="text-2xl font-bold text-blue-800">{executionReport.tempoMedio} dias</p>
+                              </div>
+                              <div className="bg-green-50 p-3 rounded-xl text-center">
+                                <p className="text-sm text-green-600 font-medium">Concluídas</p>
+                                <p className="text-2xl font-bold text-green-800">{executionReport.totalConcluidas}</p>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                              <div className="bg-gray-50 p-2 rounded-lg text-center">
+                                <p className="font-bold text-lg text-green-600">{executionReport.maisRapido.toFixed(1)}</p>
+                                <p className="text-gray-600">Mais Rápido (dias)</p>
+                              </div>
+                              <div className="bg-gray-50 p-2 rounded-lg text-center">
+                                <p className="font-bold text-lg text-red-600">{executionReport.maisLento.toFixed(1)}</p>
+                                <p className="text-gray-600">Mais Lento (dias)</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </div>
