@@ -743,7 +743,8 @@ export function DesignaliCreative() {
                           <motion.div
                             key={order.id}
                             whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
-                            className="flex items-center justify-between p-4"
+                            className="flex items-center justify-between p-4 cursor-pointer"
+                            onClick={() => handleViewOS(order)}
                           >
                             <div className="flex items-center gap-3">
                               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted">
@@ -781,14 +782,6 @@ export function DesignaliCreative() {
                                  order.status === 'em_execucao' ? 'Em Execução' :
                                  order.status === 'concluida' ? 'Concluída' : 'Cancelada'}
                               </Badge>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="rounded-xl"
-                                onClick={() => handleViewOS(order)}
-                              >
-                                Ver OS
-                              </Button>
                             </div>
                           </motion.div>
                         ))}
@@ -846,7 +839,7 @@ export function DesignaliCreative() {
                         <Button 
                           variant="outline" 
                           size="icon"
-                          className="rounded-2xl"
+                            className="rounded-2xl"
                           onClick={() => setShowFilters(!showFilters)}
                         >
                           <Filter className="h-4 w-4" />
@@ -865,7 +858,7 @@ export function DesignaliCreative() {
                         >
                           <RefreshCw className="h-4 w-4" />
                         </Button>
-                      </div>
+                        </div>
                       
                       {/* Filtros Avançados (Colapsáveis) */}
                       {showFilters && (
@@ -944,7 +937,7 @@ export function DesignaliCreative() {
                             </SelectContent>
                           </Select>
                         </div>
-                          </div>
+                        </div>
                         </div>
                       )}
                     </CardContent>
@@ -957,7 +950,7 @@ export function DesignaliCreative() {
                               <div>
                           <CardTitle>Ordens de Serviço</CardTitle>
                           <CardDescription>Lista de todas as ordens de serviço</CardDescription>
-                              </div>
+                      </div>
                         <Badge variant="outline" className="rounded-xl">
                           {maintenanceRequests.length} OS encontradas
                                     </Badge>
@@ -976,19 +969,20 @@ export function DesignaliCreative() {
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
-                              className="flex items-center justify-between p-4 border rounded-2xl hover:shadow-md transition-all"
+                              className="flex items-center justify-between p-4 border rounded-2xl hover:shadow-md transition-all cursor-pointer"
+                              onClick={() => handleViewOS(request)}
                             >
-                              <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted">
                                   <FileText className="h-5 w-5" />
                                 </div>
-                                <div>
+                              <div>
                                   <p className="font-medium">{request.solicitante}</p>
                                   <p className="text-sm text-muted-foreground">
                                     {request.setor} • {request.created_at ? new Date(request.created_at).toLocaleDateString('pt-BR') : 'N/A'}
                                   </p>
-                                </div>
                               </div>
+                            </div>
                               <div className="flex items-center gap-2">
                                 <Badge 
                                   variant="outline" 
@@ -1014,26 +1008,15 @@ export function DesignaliCreative() {
                                    request.status === 'em_execucao' ? 'Em Execução' :
                                    request.status === 'concluida' ? 'Concluída' : 'Cancelada'}
                                 </Badge>
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm" 
-                                  className="rounded-xl"
-                                  onClick={() => {
-                                    console.log('Botão Ver OS clicado para:', request)
-                                    handleViewOS(request)
-                                  }}
-                                >
-                                  Ver OS
-                                </Button>
-                              </div>
+                          </div>
                             </motion.div>
                           ))}
-                            </div>
+                        </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center p-12 text-center">
                           <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted mb-6">
                             <FileText className="h-10 w-10 text-muted-foreground" />
-                          </div>
+                      </div>
                           <h3 className="text-xl font-semibold mb-2">Nenhuma OS encontrada</h3>
                           <p className="text-muted-foreground mb-6 max-w-md">
                             Não há ordens de serviço cadastradas ou que correspondam aos filtros aplicados.
