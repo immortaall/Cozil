@@ -5,10 +5,33 @@ export async function POST(request: NextRequest) {
   try {
     console.log('=== WEBHOOK CHAMADO ===')
     
-    // Teste simples primeiro
+    // Processar dados recebidos
+    const body = await request.json()
+    console.log('Dados recebidos:', JSON.stringify(body, null, 2))
+    
+    // Mapear dados básicos
+    const maintenanceData = {
+      solicitante: body['Solicitante'] || 'Teste',
+      setor: body['Setor'] || 'TI',
+      data_solicitacao: body['Data da solicitação'] || new Date().toISOString().split('T')[0],
+      local_equipamento: body['Local/Equipamento'] || 'Local Teste',
+      prioridade: mapPriority(body['Prioridade']),
+      tipo_manutencao: mapMaintenanceType(body['Tipo de Manutenção']),
+      descricao: body['Descreva o serviço...'] || 'Teste de webhook',
+      fotos_url: body['Upload de Foto do Problema'] ? 
+        (Array.isArray(body['Upload de Foto do Problema']) 
+          ? body['Upload de Foto do Problema'] 
+          : [body['Upload de Foto do Problema']]) 
+        : [],
+      status: 'pendente' as const
+    }
+    
+    console.log('Dados mapeados:', JSON.stringify(maintenanceData, null, 2))
+    
     return NextResponse.json({ 
       success: true, 
-      message: 'Webhook funcionando!',
+      message: 'Webhook funcionando com dados!',
+      received: maintenanceData,
       timestamp: new Date().toISOString()
     }, {
       status: 200,
@@ -19,19 +42,6 @@ export async function POST(request: NextRequest) {
         'Access-Control-Max-Age': '86400',
       }
     })
-    
-    // Código original comentado temporariamente
-    /*
-    console.log('Headers:', Object.fromEntries(request.headers.entries()))
-    
-    const body = await request.json()
-    
-    // Log para debug
-    console.log('Webhook recebido:', JSON.stringify(body, null, 2))
-    console.log('Tipo do body:', typeof body)
-    console.log('Keys do body:', Object.keys(body))
-    
-    */
 
   } catch (error) {
     console.error('Erro ao processar webhook do Google Forms:', error)
